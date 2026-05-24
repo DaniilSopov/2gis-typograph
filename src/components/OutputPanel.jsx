@@ -73,6 +73,7 @@ function Segment({ segment, highlight }) {
     <>
       {[...segment.text].map((char, i) => {
         const group = TYPO_CHAR_GROUP[char] || segment.group
+        if (group === 'changed') return <span key={i}>{char}</span>
         return <CharMark key={i} char={char} group={group} />
       })}
     </>
