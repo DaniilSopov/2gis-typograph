@@ -186,7 +186,7 @@ export const rules = [
     description: 'После / добавляется Word Joiner (U+2060) — предотвращает перенос',
     group: 'zero-width',
     apply(text) {
-      return text.replace(/\/(?!⁠)/g, `/${WJ}`);
+      return text.replace(/\/(?![ \t]*⁠)/g, `/${WJ}`);
     },
   },
 ];
