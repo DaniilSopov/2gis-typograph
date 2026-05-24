@@ -4,6 +4,7 @@
   flex-direction: column;
   min-width: 0;
   align-self: flex-start;
+  width: 100%;
 }
 
 /* ── Header ─────────────────────────────────────────────────────────────────── */
@@ -207,4 +208,21 @@
   background: var(--highlight-dash-en);
   outline: 1px solid var(--highlight-dash-en-border);
   outline-offset: -1px;
+}
+
+@media (max-width: 900px) {
+  .panel {
+    align-self: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .outputFooter {
+    justify-content: stretch;
+  }
+
+  .copyBtn {
+    width: 100%;
+    justify-content: center;
+  }
 }

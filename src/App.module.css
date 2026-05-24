@@ -52,7 +52,7 @@
   flex: 1;
   display: flex;
   gap: 24px;
-  margin-top: 36px;
+  margin-top: 24px;
   align-items: flex-start;
 }
 
@@ -131,7 +131,7 @@
 
 .inputFooter {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   padding-top: 12px;
   flex-shrink: 0;
@@ -192,5 +192,31 @@
 
   .main {
     flex-direction: column;
+  }
+
+  .inputSection {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .layout {
+    padding: 20px 16px 0;
+  }
+
+  .inputFooter {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .processBtn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .hint {
+    order: 1;
+    text-align: center;
+    width: 100%;
   }
 }
