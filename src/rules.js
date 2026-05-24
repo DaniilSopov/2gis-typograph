@@ -191,7 +191,19 @@ export const rules = [
   },
 ];
 
+function sanitize(text) {
+  return text
+    // Remove zero-width characters (WJ, ZWSP, ZWJ, ZWNJ, BOM, soft hyphen)
+    .replace(/[⁠​‌‍﻿­]/g, '')
+    // Normalize NBSP and other space variants → regular space
+    .replace(/[            ]/g, ' ')
+    // Collapse multiple spaces/tabs into one (preserve newlines)
+    .replace(/[ \t]{2,}/g, ' ')
+    // Remove spaces at the start/end of each line
+    .replace(/^[ \t]+|[ \t]+$/gm, '')
+}
+
 export function applyRules(text) {
   if (!text || !text.trim()) return text;
-  return rules.reduce((current, rule) => rule.apply(current), text);
+  return rules.reduce((current, rule) => rule.apply(current), sanitize(text));
 }
