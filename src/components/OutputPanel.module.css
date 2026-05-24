@@ -88,7 +88,6 @@
   color: var(--color-text);
   white-space: pre-wrap;
   overflow-wrap: break-word;
-  word-break: break-word;
   min-width: 0;
   overflow: auto;
 }
