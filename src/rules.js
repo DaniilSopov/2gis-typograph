@@ -163,7 +163,7 @@ export const rules = [
     description: 'После эмодзи ставится NBSP перед следующим словом',
     group: 'nbsp',
     apply(text) {
-      return text.replace(/(\p{Emoji_Presentation}|\p{Extended_Pictographic}) (?=\S)/gu, `$1${NBSP}`);
+      return text.replace(/(\p{Emoji_Presentation}|\p{Extended_Pictographic})(️?) (?=\S)/gu, `$1$2${NBSP}`);
     },
   },
   {
@@ -173,8 +173,8 @@ export const rules = [
     group: 'nbsp',
     apply(text) {
       return text.replace(
-        /(\p{Emoji_Presentation}|\p{Extended_Pictographic})[  ]([а-яёa-z])/gu,
-        (_, emoji, char) => `${emoji}${NBSP}${char.toUpperCase()}`
+        /(\p{Emoji_Presentation}|\p{Extended_Pictographic})(️?)[  ]([а-яёa-z])/gu,
+        (_, emoji, vs, char) => `${emoji}${vs}${NBSP}${char.toUpperCase()}`
       );
     },
   },
