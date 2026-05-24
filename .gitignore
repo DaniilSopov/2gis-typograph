@@ -3,3 +3,4 @@ dist/
 .DS_Store
 *.local
 .claude/
+package-lock.json
