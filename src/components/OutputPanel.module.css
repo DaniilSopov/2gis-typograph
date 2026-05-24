@@ -1,0 +1,210 @@
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  align-self: flex-start;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding-left: 2px;
+  flex-shrink: 0;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  color: var(--color-text);
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font);
+}
+
+.checkboxLabel {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.infoWrapper {
+  position: relative;
+}
+
+.infoBtn {
+  width: 16px;
+  height: 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+
+.infoBtn:hover {
+  opacity: 1;
+}
+
+/* ── Output area ────────────────────────────────────────────────────────────── */
+.output {
+  min-height: 280px;
+  max-height: 400px;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  padding: 13px 16px 16px;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
+  overflow: auto;
+}
+
+.placeholder {
+  color: var(--color-text-secondary);
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────────── */
+.outputFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 12px;
+  flex-shrink: 0;
+}
+
+.copyBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 13px 16px 15px;
+  background: rgba(20, 20, 20, 0.06);
+  color: #1ba136;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.copyBtn:hover:not(:disabled) {
+  background: rgba(20, 20, 20, 0.09);
+}
+
+.copyBtn.copied {
+  color: #1ba136;
+}
+
+.copyBtn.copyDisabled {
+  color: var(--color-text-tertiary);
+  cursor: default;
+}
+
+/* ── Highlights ─────────────────────────────────────────────────────────────── */
+.highlight {
+  border-radius: 3px;
+  padding: 1px 0;
+  font-style: normal;
+}
+
+.group_nbsp {
+  background: var(--highlight-nbsp);
+  outline: 1px solid var(--highlight-nbsp-border);
+  outline-offset: -1px;
+}
+
+.nbspMark {
+  display: inline-block;
+  position: relative;
+}
+.nbspMark::after {
+  content: '';
+  position: absolute;
+  width: 1.5px;
+  height: 0.65em;
+  background: var(--highlight-nbsp-border);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.group_zero-width {
+  background: var(--highlight-zero);
+  outline: 1px solid var(--highlight-zero-border);
+  outline-offset: -1px;
+}
+
+.zwMark {
+  display: inline-block;
+  position: relative;
+  min-width: 6px;
+}
+.zwMark::after {
+  content: '';
+  position: absolute;
+  width: 1.5px;
+  height: 0.65em;
+  background: var(--highlight-zero-border);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.group_quotes {
+  background: var(--highlight-quotes);
+  outline: 1px solid var(--highlight-quotes-border);
+  outline-offset: -1px;
+}
+
+.group_dash-em {
+  background: var(--highlight-dash-em);
+  outline: 1px solid var(--highlight-dash-em-border);
+  outline-offset: -1px;
+}
+
+.group_dash-en {
+  background: var(--highlight-dash-en);
+  outline: 1px solid var(--highlight-dash-en-border);
+  outline-offset: -1px;
+}

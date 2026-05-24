@@ -1,0 +1,196 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 80px 0;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.headerTitle {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: -0.44px;
+  color: var(--color-text);
+}
+
+.headerTitleGray {
+  color: var(--color-text-secondary);
+}
+
+.headerSubtitle {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: -0.234px;
+  color: var(--color-text-secondary);
+}
+
+/* ── Main two-column layout ─────────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  display: flex;
+  gap: 24px;
+  margin-top: 36px;
+  align-items: flex-start;
+}
+
+/* ── Input column ───────────────────────────────────────────────────────────── */
+.inputSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sectionHeader {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  color: var(--color-text);
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding-left: 2px;
+  flex-shrink: 0;
+}
+
+.textareaWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.textarea {
+  min-height: 280px;
+  max-height: 400px;
+  width: 100%;
+  height: 280px;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  padding: 13px 16px 16px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  resize: none;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.textarea::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.clearBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.75;
+  transition: opacity 0.15s;
+  border-radius: 6px;
+}
+
+.clearBtn:hover {
+  opacity: 1;
+}
+
+.inputFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  flex-shrink: 0;
+}
+
+.hint {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: -0.234px;
+  color: var(--color-text-secondary);
+}
+
+.processBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 13px 16px 15px;
+  background: var(--color-accent);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+
+.processBtn:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}
+
+.processBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────────── */
+.footer {
+  padding: 20px 0 16px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: -0.234px;
+  color: var(--color-text-tertiary);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    padding: 24px 24px 0;
+  }
+
+  .main {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,70 @@
+@font-face {
+  font-family: 'SBSansText';
+  src: url('/fonts/SBSansText-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SBSansText';
+  src: url('/fonts/SBSansText-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SBSansText';
+  src: url('/fonts/SBSansText-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-bg: #f1f1f1;
+  --color-surface: #ffffff;
+  --color-border: #e4e4e0;
+  --color-text: #141414;
+  --color-text-secondary: #898989;
+  --color-text-tertiary: #b8b8b8;
+  --color-accent: #1db93c;
+  --color-accent-hover: #1aa335;
+
+  --highlight-nbsp: rgba(27, 161, 54, 0.18);
+  --highlight-nbsp-border: #1ba136;
+  --highlight-zero: rgba(238, 93, 231, 0.18);
+  --highlight-zero-border: #ee5de7;
+  --highlight-quotes: rgba(239, 167, 1, 0.18);
+  --highlight-quotes-border: #efa701;
+  --highlight-dash-em: rgba(0, 89, 214, 0.18);
+  --highlight-dash-em-border: #0059d6;
+  --highlight-dash-en: rgba(53, 136, 253, 0.18);
+  --highlight-dash-en-border: #3588fd;
+
+  --radius: 12px;
+  --radius-btn: 10px;
+  --font: 'SBSansText', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'SBSansText', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
