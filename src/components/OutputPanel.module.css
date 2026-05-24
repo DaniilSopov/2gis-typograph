@@ -151,7 +151,7 @@
 }
 
 .nbspMark {
-  display: inline-block;
+  display: inline;
   position: relative;
 }
 .nbspMark::after {
@@ -174,9 +174,9 @@
 }
 
 .zwMark {
-  display: inline-block;
+  display: inline;
   position: relative;
-  min-width: 6px;
+  padding: 0 3px;
 }
 .zwMark::after {
   content: '';
