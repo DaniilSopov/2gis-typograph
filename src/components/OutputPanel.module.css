@@ -67,6 +67,8 @@
   justify-content: center;
   opacity: 0.8;
   transition: opacity 0.15s;
+  position: relative;
+  top: 1px;
 }
 
 .infoBtn:hover {
