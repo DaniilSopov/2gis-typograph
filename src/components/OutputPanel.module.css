@@ -160,7 +160,18 @@
 .zwMark {
   display: inline;
   position: relative;
-  padding: 0 3px;
+}
+.zwMark::before {
+  content: '';
+  position: absolute;
+  width: 3px;
+  height: 0.75em;
+  background: var(--highlight-zero);
+  left: -1.5px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 1px;
+  pointer-events: none;
 }
 
 .group_quotes {
