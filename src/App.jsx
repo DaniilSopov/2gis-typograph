@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback } from 'react'
 import { applyRules } from './rules.js'
 import { formatOutput } from './output.js'
 import { computeDiff } from './diff.js'
@@ -41,14 +41,16 @@ export default function App() {
   const [result, setResult] = useState(null)
   const [highlightEnabled, setHighlightEnabled] = useState(true)
   const [spellEnabled, setSpellEnabled] = useState(true)
-  const textareaRef = useRef(null)
-  const overlayRef = useRef(null)
+  const [textareaScrollTop, setTextareaScrollTop] = useState(0)
   const spellErrors = useSpellcheck(input, spellEnabled)
 
-  const handleTextareaScroll = useCallback(() => {
-    if (overlayRef.current && textareaRef.current) {
-      overlayRef.current.scrollTop = textareaRef.current.scrollTop
-    }
+  const handleTextareaScroll = useCallback((e) => {
+    setTextareaScrollTop(e.target.scrollTop)
+  }, [])
+
+  const handleSpellFix = useCallback((err) => {
+    if (!err.s?.length) return
+    setInput(prev => prev.slice(0, err.pos) + err.s[0] + prev.slice(err.pos + err.len))
   }, [])
 
   const handleProcess = useCallback(() => {
@@ -68,6 +70,8 @@ export default function App() {
       handleProcess()
     }
   }, [handleProcess])
+
+  const fixableErrors = spellEnabled ? spellErrors.filter(e => e.s?.length) : []
 
   return (
     <div className={styles.layout}>
@@ -96,11 +100,14 @@ export default function App() {
           </div>
           <div className={styles.textareaWrapper}>
             {spellEnabled && (
-              <SpellcheckOverlay text={input} errors={spellErrors} innerRef={overlayRef} />
+              <SpellcheckOverlay
+                text={input}
+                errors={spellErrors}
+                scrollTop={textareaScrollTop}
+              />
             )}
             <textarea
               id="input"
-              ref={textareaRef}
               className={styles.textarea}
               value={input}
               onChange={e => setInput(e.target.value)}
@@ -120,6 +127,17 @@ export default function App() {
               </button>
             )}
           </div>
+          {fixableErrors.length > 0 && (
+            <div className={styles.spellFixes}>
+              {fixableErrors.map((err, i) => (
+                <button key={i} className={styles.spellFix} onClick={() => handleSpellFix(err)}>
+                  <span className={styles.spellFixWord}>{err.word}</span>
+                  <span className={styles.spellFixArrow}>→</span>
+                  <span className={styles.spellFixSuggestion}>{err.s[0]}</span>
+                </button>
+              ))}
+            </div>
+          )}
           <div className={styles.inputFooter}>
             <span className={styles.hint}>Ctrl + Enter — типографировать</span>
             <button

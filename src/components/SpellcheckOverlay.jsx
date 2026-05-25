@@ -24,10 +24,12 @@ function buildSegments(text, errors) {
   return out
 }
 
-export default function SpellcheckOverlay({ text, errors, innerRef }) {
+export default function SpellcheckOverlay({ text, errors, scrollTop = 0 }) {
   return (
-    <div ref={innerRef} className={styles.overlay} aria-hidden="true">
-      {errors.length ? buildSegments(text, errors) : text}
+    <div className={styles.overlay} aria-hidden="true">
+      <div style={{ transform: `translateY(${-scrollTop}px)` }}>
+        {errors.length ? buildSegments(text, errors) : text}
+      </div>
     </div>
   )
 }
