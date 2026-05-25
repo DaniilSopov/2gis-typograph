@@ -139,38 +139,22 @@
 
 /* ── Highlights ─────────────────────────────────────────────────────────────── */
 .highlight {
-  border-radius: 3px;
+  border-radius: 1px;
   padding: 1px 0;
   font-style: normal;
 }
 
 .group_nbsp {
   background: var(--highlight-nbsp);
-  outline: 1px solid var(--highlight-nbsp-border);
-  outline-offset: -1px;
 }
 
 .nbspMark {
   display: inline;
   position: relative;
 }
-.nbspMark::after {
-  content: '';
-  position: absolute;
-  width: 1.5px;
-  height: 0.65em;
-  background: var(--highlight-nbsp-border);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 1px;
-  pointer-events: none;
-}
 
 .group_zero-width {
   background: var(--highlight-zero);
-  outline: 1px solid var(--highlight-zero-border);
-  outline-offset: -1px;
 }
 
 .zwMark {
@@ -178,35 +162,17 @@
   position: relative;
   padding: 0 3px;
 }
-.zwMark::after {
-  content: '';
-  position: absolute;
-  width: 1.5px;
-  height: 0.65em;
-  background: var(--highlight-zero-border);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 1px;
-  pointer-events: none;
-}
 
 .group_quotes {
   background: var(--highlight-quotes);
-  outline: 1px solid var(--highlight-quotes-border);
-  outline-offset: -1px;
 }
 
 .group_dash-em {
   background: var(--highlight-dash-em);
-  outline: 1px solid var(--highlight-dash-em-border);
-  outline-offset: -1px;
 }
 
 .group_dash-en {
   background: var(--highlight-dash-en);
-  outline: 1px solid var(--highlight-dash-en-border);
-  outline-offset: -1px;
 }
 
 @media (max-width: 900px) {

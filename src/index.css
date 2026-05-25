@@ -38,16 +38,11 @@
   --color-accent: #1db93c;
   --color-accent-hover: #1aa335;
 
-  --highlight-nbsp: rgba(27, 161, 54, 0.18);
-  --highlight-nbsp-border: #1ba136;
-  --highlight-zero: rgba(238, 93, 231, 0.18);
-  --highlight-zero-border: #ee5de7;
-  --highlight-quotes: rgba(239, 167, 1, 0.18);
-  --highlight-quotes-border: #efa701;
-  --highlight-dash-em: rgba(0, 89, 214, 0.18);
-  --highlight-dash-em-border: #0059d6;
-  --highlight-dash-en: rgba(53, 136, 253, 0.18);
-  --highlight-dash-en-border: #3588fd;
+  --highlight-nbsp: rgba(27, 161, 54, 0.30);
+  --highlight-zero: rgba(238, 93, 231, 0.30);
+  --highlight-quotes: rgba(239, 167, 1, 0.30);
+  --highlight-dash-em: rgba(0, 89, 214, 0.30);
+  --highlight-dash-en: rgba(53, 136, 253, 0.30);
 
   --radius: 12px;
   --radius-btn: 10px;
