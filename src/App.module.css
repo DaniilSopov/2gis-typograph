@@ -73,14 +73,38 @@
   height: 40px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding-left: 2px;
   flex-shrink: 0;
+}
+
+.spellToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font);
+}
+
+.spellLabel {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  color: var(--color-text);
+  white-space: nowrap;
 }
 
 .textareaWrapper {
   position: relative;
   display: flex;
   flex-direction: column;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
 .textarea {
@@ -96,11 +120,13 @@
   padding: 13px 16px 16px;
   border: none;
   border-radius: var(--radius);
-  background: var(--color-surface);
+  background: transparent;
   color: var(--color-text);
   resize: none;
   outline: none;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 .textarea::placeholder {
