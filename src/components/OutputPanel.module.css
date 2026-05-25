@@ -165,11 +165,10 @@
   content: '';
   position: absolute;
   width: 3px;
-  height: calc(1em + 2px);
+  top: 0;
+  bottom: 0;
   background: var(--highlight-zero);
   left: -1.5px;
-  top: 50%;
-  transform: translateY(-50%);
   border-radius: 1px;
   pointer-events: none;
 }
