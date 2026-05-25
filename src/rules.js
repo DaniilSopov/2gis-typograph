@@ -208,7 +208,7 @@ export const rules = [
     group: 'nbsp',
     apply(text) {
       const units = [
-        '₽', '%',
+        '₽', '€', '%',
         'км/ч', 'м/с',
         'суток', 'сутки', 'часов', 'минут', 'метров', 'рублей', 'человек',
         'недели', 'месяцев',
@@ -271,11 +271,15 @@ export const rules = [
   // ── zero-width group ────────────────────────────────────────────────────────
   {
     id: 'word-joiner-slash',
-    name: 'Word Joiner после /',
-    description: 'После / добавляется Word Joiner (U+2060) — предотвращает перенос',
+    name: 'Word Joiner после / и –',
+    description: 'После / (перед коротким сегментом ≤3 симв.) и после – в числовых диапазонах добавляется Word Joiner (U+2060)',
     group: 'zero-width',
     apply(text) {
-      return text.replace(/\/(?=[\p{L}\d])/gu, `/${WJ}`);
+      // Only short segments after slash — units like м/с, км/ч; long segments (URLs) are skipped
+      text = text.replace(/\/(?=[\p{L}\d]{1,3}(?:[^\p{L}\d]|$))/gu, `/${WJ}`);
+      // Numeric ranges: prevent line break after en-dash
+      text = text.replace(/–(?=\d)/g, `–${WJ}`);
+      return text;
     },
   },
 ];
