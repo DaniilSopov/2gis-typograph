@@ -8,9 +8,9 @@ const ITEMS = [
   { group: 'zero-width', label: 'Word Joiner',        symbol: 'U+2060',   bg: 'rgba(238,93,231,0.30)' },
 ]
 
-export default function Legend({ onClose }) {
+export default function Legend({ visible, onClose }) {
   return (
-    <div className={styles.panel} role="dialog" aria-label="Легенда">
+    <div className={`${styles.panel} ${visible ? styles.panelVisible : ''}`} role="dialog" aria-label="Легенда">
       {ITEMS.map(item => (
         <div key={item.group} className={styles.row}>
           <div className={styles.rowLeft}>

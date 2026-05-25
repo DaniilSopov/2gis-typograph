@@ -15,6 +15,7 @@
   height: 40px;
   padding-left: 2px;
   flex-shrink: 0;
+  position: relative;
 }
 
 .label {
@@ -52,7 +53,6 @@
 }
 
 .infoWrapper {
-  position: relative;
 }
 
 .infoBtn {
@@ -122,7 +122,7 @@
   border: none;
   border-radius: var(--radius-btn);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.2s;
   white-space: nowrap;
 }
 
@@ -131,7 +131,21 @@
 }
 
 .copyBtn.copied {
-  color: #1ba136;
+  background: var(--color-accent);
+  color: #fff;
+  pointer-events: none;
+}
+
+@keyframes copyFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.copyBtnContent {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  animation: copyFadeIn 0.15s ease;
 }
 
 .copyBtn.copyDisabled {

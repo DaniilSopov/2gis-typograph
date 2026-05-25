@@ -95,18 +95,18 @@ function IconCheck({ active }) {
   )
 }
 
-function IconCopy({ color }) {
+function IconCopy() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12.25 8C14.31 8 16 9.69 16 11.75V18.25C16 20.31 14.31 22 12.25 22H5.75C3.69 22 2 20.31 2 18.25V11.75C2 9.69 3.69 8 5.75 8H12.25ZM4.7002 9.7002C4.1502 9.7002 3.7002 10.1502 3.7002 10.7002V19.2998C3.7002 19.8498 4.1502 20.2998 4.7002 20.2998H13.2998C13.8498 20.2998 14.2998 19.8498 14.2998 19.2998V10.7002C14.2998 10.1502 13.8498 9.7002 13.2998 9.7002H4.7002ZM18.25 2C20.31 2 22 3.69 22 5.75V12.25C22 14.31 20.31 16 18.25 16H17.7002V14.2998H19.2998C19.8498 14.2998 20.2998 13.8498 20.2998 13.2998V4.7002C20.2998 4.1502 19.8498 3.7002 19.2998 3.7002H10.7002C10.1502 3.7002 9.7002 4.1502 9.7002 4.7002V6.2998H8V5.75C8 3.69 9.69 2 11.75 2H18.25Z" fill={color} />
+      <path d="M12.25 8C14.31 8 16 9.69 16 11.75V18.25C16 20.31 14.31 22 12.25 22H5.75C3.69 22 2 20.31 2 18.25V11.75C2 9.69 3.69 8 5.75 8H12.25ZM4.7002 9.7002C4.1502 9.7002 3.7002 10.1502 3.7002 10.7002V19.2998C3.7002 19.8498 4.1502 20.2998 4.7002 20.2998H13.2998C13.8498 20.2998 14.2998 19.8498 14.2998 19.2998V10.7002C14.2998 10.1502 13.8498 9.7002 13.2998 9.7002H4.7002ZM18.25 2C20.31 2 22 3.69 22 5.75V12.25C22 14.31 20.31 16 18.25 16H17.7002V14.2998H19.2998C19.8498 14.2998 20.2998 13.8498 20.2998 13.2998V4.7002C20.2998 4.1502 19.8498 3.7002 19.2998 3.7002H10.7002C10.1502 3.7002 9.7002 4.1502 9.7002 4.7002V6.2998H8V5.75C8 3.69 9.69 2 11.75 2H18.25Z" fill="currentColor" />
     </svg>
   )
 }
 
-function IconCheckCircle({ color }) {
+function IconCheckCircle() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92493 23 1 18.0751 1 12C1 5.92487 5.92493 1 12 1ZM15.9502 7L10.9697 15.5996L8.90039 12H6.94043L9.24023 16C10.0102 17.3299 11.9302 17.33 12.7002 16L17.8604 7H15.9502Z" fill={color} />
+      <path d="M12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92493 23 1 18.0751 1 12C1 5.92487 5.92493 1 12 1ZM15.9502 7L10.9697 15.5996L8.90039 12H6.94043L9.24023 16C10.0102 17.3299 11.9302 17.33 12.7002 16L17.8604 7H15.9502Z" fill="currentColor" />
     </svg>
   )
 }
@@ -121,19 +121,34 @@ function IconInfo() {
 
 export default function OutputPanel({ segments, processed, highlightEnabled, onToggleHighlight }) {
   const [copied, setCopied] = useState(false)
-  const [showLegend, setShowLegend] = useState(false)
+  const [legendMounted, setLegendMounted] = useState(false)
+  const [legendVisible, setLegendVisible] = useState(false)
   const infoWrapperRef = useRef(null)
+  const legendTimerRef = useRef(null)
+
+  const openLegend = useCallback(() => {
+    if (legendTimerRef.current) clearTimeout(legendTimerRef.current)
+    setLegendMounted(true)
+    requestAnimationFrame(() => requestAnimationFrame(() => setLegendVisible(true)))
+  }, [])
+
+  const closeLegend = useCallback(() => {
+    setLegendVisible(false)
+    legendTimerRef.current = setTimeout(() => setLegendMounted(false), 200)
+  }, [])
+
+  useEffect(() => () => clearTimeout(legendTimerRef.current), [])
 
   useEffect(() => {
-    if (!showLegend) return
+    if (!legendMounted) return
     function handleClick(e) {
       if (infoWrapperRef.current && !infoWrapperRef.current.contains(e.target)) {
-        setShowLegend(false)
+        closeLegend()
       }
     }
     document.addEventListener('mousedown', handleClick)
     return () => document.removeEventListener('mousedown', handleClick)
-  }, [showLegend])
+  }, [legendMounted, closeLegend])
 
   const handleCopy = useCallback(async () => {
     if (!processed) return
@@ -170,12 +185,12 @@ export default function OutputPanel({ segments, processed, highlightEnabled, onT
           <div className={styles.infoWrapper} ref={infoWrapperRef}>
             <button
               className={styles.infoBtn}
-              onClick={() => setShowLegend(v => !v)}
+              onClick={() => legendMounted ? closeLegend() : openLegend()}
               aria-label="Легенда подсветки"
             >
               <IconInfo />
             </button>
-            {showLegend && <Legend onClose={() => setShowLegend(false)} />}
+            {legendMounted && <Legend visible={legendVisible} onClose={closeLegend} />}
           </div>
         </div>
       </div>
@@ -196,10 +211,12 @@ export default function OutputPanel({ segments, processed, highlightEnabled, onT
           onClick={handleCopy}
           disabled={!canCopy}
         >
-          {copied
-            ? <><IconCheckCircle color="#1ba136" />Скопировано в буфер обмена</>
-            : <><IconCopy color={canCopy ? '#1ba136' : '#b8b8b8'} />Копировать</>
-          }
+          <span key={String(copied)} className={styles.copyBtnContent}>
+            {copied
+              ? <><IconCheckCircle />Скопировано в буфер обмена</>
+              : <><IconCopy />Копировать</>
+            }
+          </span>
         </button>
       </div>
     </section>
