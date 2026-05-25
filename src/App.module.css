@@ -102,9 +102,6 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background: var(--color-surface);
-  border-radius: var(--radius);
-  overflow: hidden;
 }
 
 .textarea {
@@ -120,13 +117,11 @@
   padding: 13px 16px 16px;
   border: none;
   border-radius: var(--radius);
-  background: transparent;
+  background: var(--color-surface);
   color: var(--color-text);
   resize: none;
   outline: none;
   box-sizing: border-box;
-  position: relative;
-  z-index: 1;
 }
 
 .textarea::placeholder {
@@ -155,49 +150,6 @@
   opacity: 1;
 }
 
-.spellFixes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding-top: 8px;
-  flex-shrink: 0;
-}
-
-.spellFix {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
-  background: rgba(220, 50, 50, 0.07);
-  border: 1.5px solid rgba(200, 40, 40, 0.18);
-  border-radius: 8px;
-  font-family: var(--font);
-  font-size: 14px;
-  line-height: 18px;
-  letter-spacing: -0.2px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s;
-}
-
-.spellFix:hover {
-  background: rgba(220, 50, 50, 0.13);
-}
-
-.spellFixWord {
-  color: #c03030;
-  text-decoration: line-through;
-  text-decoration-color: rgba(200, 40, 40, 0.5);
-}
-
-.spellFixArrow {
-  color: var(--color-text-secondary);
-}
-
-.spellFixSuggestion {
-  color: var(--color-text);
-  font-weight: 500;
-}
 
 .inputFooter {
   display: flex;
