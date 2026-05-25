@@ -231,7 +231,7 @@ export const rules = [
     description: 'Цифра + кириллическое слово → NBSP между ними',
     group: 'nbsp',
     apply(text) {
-      return text.replace(/(\d) (?=[А-ЯЁа-яё])/g, `$1${NBSP}`);
+      return text.replace(/(?<!\d{1,2}:\d)(\d) (?=[А-ЯЁа-яё])/g, `$1${NBSP}`);
     },
   },
   {
