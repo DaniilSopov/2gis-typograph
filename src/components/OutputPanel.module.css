@@ -126,7 +126,7 @@
   white-space: nowrap;
 }
 
-.copyBtn:hover:not(:disabled) {
+.copyBtn:hover:not(:disabled):not(.copied) {
   background: rgba(20, 20, 20, 0.09);
 }
 
