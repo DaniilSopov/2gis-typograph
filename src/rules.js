@@ -241,7 +241,7 @@ export const rules = [
     group: 'nbsp',
     apply(text) {
       return text.replace(
-        /(?<![а-яёА-ЯЁa-zA-Z\d])([а-яёa-zА-ЯЁA-Z]{1,2}|[а-яёa-zА-ЯЁA-Z]{1,2}[.,;:!?]|[.,;:!?][а-яёa-zА-ЯЁA-Z]{1,2}) (?=\S)/g,
+        /(?<![а-яёА-ЯЁa-zA-Z\d\/\-])([а-яёa-zА-ЯЁA-Z]{1,2}|[а-яёa-zА-ЯЁA-Z]{1,2}[.,;:!?]|[.,;:!?][а-яёa-zА-ЯЁA-Z]{1,2}) (?=\S)/g,
         (match, token) => `${token}${NBSP}`
       );
     },
