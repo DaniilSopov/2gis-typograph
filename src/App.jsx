@@ -15,9 +15,8 @@ function IconTextFormat() {
 
 function IconXmark() {
   return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-      <circle cx="11" cy="11" r="11" fill="rgba(20,20,20,0.12)" />
-      <path d="M7.5 7.5l7 7M14.5 7.5l-7 7" stroke="#141414" strokeWidth="1.5" strokeLinecap="round" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12.0901 1C18.1701 1 23.0901 5.92 23.0901 12C23.0901 18.08 18.1701 23 12.0901 23C6.01009 23 1.09009 18.08 1.09009 12C1.09009 5.92 6.01009 1 12.0901 1ZM12.9397 9.9502C12.4698 10.4198 11.7104 10.4198 11.2405 9.9502L8.45044 7.16016L7.25024 8.36035L10.0403 11.1504C10.5099 11.6203 10.5099 12.3797 10.0403 12.8496L7.25024 15.6396L8.45044 16.8398L11.2405 14.0498C11.7104 13.5802 12.4698 13.5802 12.9397 14.0498L15.7297 16.8398L16.9299 15.6396L14.1399 12.8496C13.6703 12.3797 13.6703 11.6203 14.1399 11.1504L16.9299 8.36035L15.7297 7.16016L12.9397 9.9502Z" fill="currentColor" />
     </svg>
   )
 }
@@ -53,7 +52,7 @@ export default function App() {
           <div className={styles.headerTitle}>
             2GIS <span className={styles.headerTitleGray}>Типограф</span>
           </div>
-          <div className={styles.headerSubtitle}>Расставляет правильные типографические символы</div>
+          <div className={styles.headerSubtitle}>Расставляет типографические символы</div>
         </div>
       </header>
 

@@ -6,6 +6,7 @@ const NDASH = '–';
 // Map characters to their highlight group
 const CHAR_GROUP = {
   [NBSP]: 'nbsp',
+  ' ': 'nbsp',
   [WJ]: 'zero-width',
   '⁡': 'zero-width',
   '⁢': 'zero-width',
@@ -21,7 +22,7 @@ const CHAR_GROUP = {
 };
 
 // Invisible characters that need a visual dot marker
-const INVISIBLE = new Set([NBSP, WJ, '⁡', '⁢', '⁣', '​']);
+const INVISIBLE = new Set([NBSP, ' ', WJ, '⁡', '⁢', '⁣', '​']);
 
 /**
  * Compute LCS-based character diff between original and processed strings.

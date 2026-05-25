@@ -4,6 +4,7 @@ import styles from './OutputPanel.module.css'
 
 const TYPO_CHAR_GROUP = {
   ' ': 'nbsp',
+  ' ': 'nbsp',
   '⁠': 'zero-width',
   '​': 'zero-width',
   '«': 'quotes', '»': 'quotes',
@@ -11,7 +12,7 @@ const TYPO_CHAR_GROUP = {
   '—': 'dash-em', '–': 'dash-en',
 }
 
-const NBSP_CHAR = ' '
+const NBSP_CHARS = new Set([' ', ' '])
 const ZW_CHARS = new Set(['⁠', '​', '⁡', '⁢', '⁣'])
 
 function splitAtTypoChars(text) {
@@ -31,7 +32,7 @@ function splitAtTypoChars(text) {
 }
 
 function CharMark({ char, group }) {
-  const isNbsp = char === NBSP_CHAR
+  const isNbsp = NBSP_CHARS.has(char)
   const isZw = ZW_CHARS.has(char)
 
   const cls = [
@@ -42,7 +43,8 @@ function CharMark({ char, group }) {
   ].filter(Boolean).join(' ')
 
   let title = undefined
-  if (isNbsp) title = 'Неразрывный пробел (U+00A0)'
+  if (char === ' ') title = 'Неразрывный пробел (U+00A0)'
+  if (char === ' ') title = 'Узкий неразрывный пробел (U+202F)'
   if (char === '⁠') title = 'Word Joiner (U+2060)'
 
   return (

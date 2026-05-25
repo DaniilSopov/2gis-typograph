@@ -75,7 +75,7 @@
 
 /* ── Output area ────────────────────────────────────────────────────────────── */
 .output {
-  min-height: 280px;
+  height: 400px;
   max-height: 400px;
   font-family: var(--font);
   font-size: 16px;
@@ -188,6 +188,12 @@
 @media (max-width: 900px) {
   .panel {
     align-self: stretch;
+  }
+
+  .output {
+    height: auto;
+    min-height: 280px;
+    max-height: 400px;
   }
 }
 
