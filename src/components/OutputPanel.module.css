@@ -80,7 +80,7 @@
   font-family: var(--font);
   font-size: 16px;
   font-weight: 400;
-  line-height: 20px;
+  line-height: 1.35;
   letter-spacing: -0.24px;
   padding: 13px 16px 16px;
   border-radius: var(--radius);
@@ -165,7 +165,7 @@
   content: '';
   position: absolute;
   width: 3px;
-  height: 0.75em;
+  height: 1em;
   background: var(--highlight-zero);
   left: -1.5px;
   top: 50%;
