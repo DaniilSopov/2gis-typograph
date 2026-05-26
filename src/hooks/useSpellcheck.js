@@ -11,6 +11,7 @@ export function useSpellcheck(text, enabled) {
       return
     }
     const controller = new AbortController()
+    const delay = /[\s.,!?;:]$/.test(text) ? 100 : 500
     const id = setTimeout(async () => {
       try {
         const res = await fetch(
@@ -21,7 +22,7 @@ export function useSpellcheck(text, enabled) {
       } catch (e) {
         if (e.name !== 'AbortError') setErrors([])
       }
-    }, 800)
+    }, delay)
     return () => { clearTimeout(id); controller.abort() }
   }, [text, enabled])
 

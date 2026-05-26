@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import Legend from './Legend.jsx'
+import Toggle from './Toggle.jsx'
 import styles from './OutputPanel.module.css'
 
 const TYPO_CHAR_GROUP = {
@@ -82,22 +83,6 @@ function Segment({ segment, highlight }) {
   )
 }
 
-function IconCheck({ active }) {
-  return (
-    <span style={{ width: 24, height: 24, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-      {active ? (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="12" cy="12" r="12" fill="white" />
-          <path d="M7 12.5l3.5 3.5 6.5-7" stroke="#1DB93C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ) : (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="12" cy="12" r="11" stroke="#d4d4d4" strokeWidth="1.5" />
-        </svg>
-      )}
-    </span>
-  )
-}
 
 function IconCopy() {
   return (
@@ -178,14 +163,12 @@ export default function OutputPanel({ segments, processed, highlightEnabled, onT
       <div className={styles.panelHeader}>
         <span className={styles.label}>Результат</span>
         <div className={styles.headerRight}>
-          <button
-            className={styles.checkboxRow}
+          <Toggle
+            active={highlightEnabled}
+            label="Подсвечивать изменения"
             onClick={onToggleHighlight}
-            aria-label={highlightEnabled ? 'Отключить подсветку' : 'Включить подсветку'}
-          >
-            <IconCheck active={highlightEnabled} />
-            <span className={styles.checkboxLabel}>Подсвечивать изменения</span>
-          </button>
+            ariaLabel={highlightEnabled ? 'Отключить подсветку' : 'Включить подсветку'}
+          />
           <div className={styles.infoWrapper} ref={infoWrapperRef}>
             <button
               className={styles.infoBtn}

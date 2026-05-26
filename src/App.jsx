@@ -5,6 +5,7 @@ import { computeDiff } from './diff.js'
 import { useSpellcheck } from './hooks/useSpellcheck.js'
 import SpellEditor from './components/SpellEditor.jsx'
 import OutputPanel from './components/OutputPanel.jsx'
+import Toggle from './components/Toggle.jsx'
 import styles from './App.module.css'
 
 function IconTextFormat() {
@@ -15,22 +16,6 @@ function IconTextFormat() {
   )
 }
 
-function IconCheck({ active }) {
-  return (
-    <span style={{ width: 24, height: 24, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-      {active ? (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="12" cy="12" r="12" fill="white" />
-          <path d="M7 12.5l3.5 3.5 6.5-7" stroke="#1DB93C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ) : (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="12" cy="12" r="11" stroke="#d4d4d4" strokeWidth="1.5" />
-        </svg>
-      )}
-    </span>
-  )
-}
 
 function IconXmark() {
   return (
@@ -117,14 +102,12 @@ export default function App() {
         <section className={styles.inputSection}>
           <div className={styles.sectionHeader}>
             <span>Исходный текст</span>
-            <button
-              className={styles.spellToggle}
+            <Toggle
+              active={spellEnabled}
+              label="Орфография"
               onClick={() => setSpellEnabled(v => !v)}
-              aria-label={spellEnabled ? 'Отключить проверку орфографии' : 'Включить проверку орфографии'}
-            >
-              <IconCheck active={spellEnabled} />
-              <span className={styles.spellLabel}>Орфография</span>
-            </button>
+              ariaLabel={spellEnabled ? 'Отключить проверку орфографии' : 'Включить проверку орфографии'}
+            />
           </div>
           <div className={styles.textareaWrapper}>
             <SpellEditor
