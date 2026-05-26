@@ -83,15 +83,19 @@ function Segment({ segment, highlight }) {
 }
 
 function IconCheck({ active }) {
-  return active ? (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="12" fill="#1DB93C" />
-      <path d="M7 12.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  ) : (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="11" stroke="#d4d4d4" strokeWidth="1.5" />
-    </svg>
+  return (
+    <span style={{ width: 24, height: 24, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      {active ? (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="12" fill="white" />
+          <path d="M7 12.5l3.5 3.5 6.5-7" stroke="#1DB93C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ) : (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="11" stroke="#d4d4d4" strokeWidth="1.5" />
+        </svg>
+      )}
+    </span>
   )
 }
 

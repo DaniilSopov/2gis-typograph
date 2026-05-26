@@ -1,7 +1,9 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { applyRules } from './rules.js'
 import { formatOutput } from './output.js'
 import { computeDiff } from './diff.js'
+import { useSpellcheck } from './hooks/useSpellcheck.js'
+import SpellEditor from './components/SpellEditor.jsx'
 import OutputPanel from './components/OutputPanel.jsx'
 import styles from './App.module.css'
 
@@ -14,22 +16,26 @@ function IconTextFormat() {
 }
 
 function IconCheck({ active }) {
-  return active ? (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="12" fill="#1DB93C" />
-      <path d="M7 12.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  ) : (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="11" stroke="#d4d4d4" strokeWidth="1.5" />
-    </svg>
+  return (
+    <span style={{ width: 24, height: 24, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      {active ? (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="12" fill="white" />
+          <path d="M7 12.5l3.5 3.5 6.5-7" stroke="#1DB93C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ) : (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="11" stroke="#d4d4d4" strokeWidth="1.5" />
+        </svg>
+      )}
+    </span>
   )
 }
 
 function IconXmark() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12.0901 1C18.1701 1 23.0901 5.92 23.0901 12C23.0901 18.08 18.1701 23 12.0901 23C6.01009 23 1.09009 18.08 1.09009 12C1.09009 5.92 6.01009 1 12.0901 1ZM12.9397 9.9502C12.4698 10.4198 11.7104 10.4198 11.2405 9.9502L8.45044 7.16016L7.25024 8.36035L10.0403 11.1504C10.5099 11.6203 10.5099 12.3797 10.0403 12.8496L7.25024 15.6396L8.45044 16.8398L11.2405 14.0498C11.7104 13.5802 12.4698 13.5802 12.9397 14.0498L15.7297 16.8398L16.9299 15.6396L14.1399 12.8496C13.6703 12.3797 13.6703 11.6203 14.1399 11.1504L16.9299 8.36035L15.7297 7.16016L12.9397 9.9502Z" fill="#b8b8b8" />
+      <path d="M12.0901 1C18.1701 1 23.0901 5.92 23.0901 12C23.0901 18.08 18.1701 23 12.0901 23C6.01009 23 1.09009 18.08 1.09009 12C1.09009 5.92 6.01009 1 12.0901 1ZM12.9397 9.9502C12.4698 10.4198 11.7104 10.4198 11.2405 9.9502L8.45044 7.16016L7.25024 8.36035L10.0403 11.1504C10.5099 11.6203 10.5099 12.3797 10.0403 12.8496L7.25024 15.6396L8.45044 16.8398L11.2405 14.0498C11.7104 13.5802 12.4698 13.5802 12.9397 14.0498L15.7297 16.8398L16.9299 15.6396L14.1399 12.8496C13.6703 12.3797 13.6703 11.6203 14.1399 11.1504L16.9299 8.36035L15.7297 7.16016L12.9397 9.9502Z" fill="currentColor" />
     </svg>
   )
 }
@@ -39,6 +45,11 @@ export default function App() {
   const [result, setResult] = useState(null)
   const [highlightEnabled, setHighlightEnabled] = useState(true)
   const [spellEnabled, setSpellEnabled] = useState(true)
+  const [popup, setPopup] = useState(null)
+  const editorRef = useRef(null)
+  const popupRef = useRef(null)
+
+  const spellErrors = useSpellcheck(input, spellEnabled)
 
   const handleProcess = useCallback(() => {
     const raw = input
@@ -57,6 +68,38 @@ export default function App() {
       handleProcess()
     }
   }, [handleProcess])
+
+  const handleEditorClick = useCallback((e) => {
+    if (!spellErrors.length) return
+    const el = editorRef.current
+    if (!el) return
+    const sel = window.getSelection()
+    if (!sel?.rangeCount) { setPopup(null); return }
+    const r = sel.getRangeAt(0)
+    const pre = r.cloneRange()
+    pre.selectNodeContents(el)
+    pre.setEnd(r.startContainer, r.startOffset)
+    const pos = pre.toString().length
+    const err = spellErrors.find(er => pos >= er.pos && pos <= er.pos + er.len)
+    if (!err || !err.s?.length) { setPopup(null); return }
+    setPopup({ x: e.clientX, y: e.clientY + 18, suggestions: err.s, pos: err.pos, len: err.len })
+  }, [spellErrors])
+
+  const applySuggestion = useCallback((suggestion) => {
+    if (!popup) return
+    const newInput = input.slice(0, popup.pos) + suggestion + input.slice(popup.pos + popup.len)
+    setInput(newInput)
+    setPopup(null)
+  }, [input, popup])
+
+  useEffect(() => {
+    if (!popup) return
+    function handleClick(e) {
+      if (popupRef.current && !popupRef.current.contains(e.target)) setPopup(null)
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [popup])
 
   return (
     <div className={styles.layout}>
@@ -84,15 +127,15 @@ export default function App() {
             </button>
           </div>
           <div className={styles.textareaWrapper}>
-            <textarea
-              id="input"
-              className={styles.textarea}
+            <SpellEditor
+              ref={editorRef}
               value={input}
-              onChange={e => setInput(e.target.value)}
+              onChange={setInput}
+              errors={spellEnabled ? spellErrors : []}
               onKeyDown={handleKeyDown}
+              onClick={handleEditorClick}
+              onScroll={() => setPopup(null)}
               placeholder="Вставьте текст сюда..."
-              spellCheck={spellEnabled}
-              lang="ru"
             />
             {input && (
               <button
@@ -125,6 +168,20 @@ export default function App() {
           onToggleHighlight={() => setHighlightEnabled(v => !v)}
         />
       </main>
+
+      {popup && (
+        <div
+          ref={popupRef}
+          className={styles.suggestionPopup}
+          style={{ left: popup.x, top: popup.y }}
+        >
+          {popup.suggestions.map((s, i) => (
+            <button key={i} className={styles.suggestionItem} onClick={() => applySuggestion(s)}>
+              {s}
+            </button>
+          ))}
+        </div>
+      )}
 
       <footer className={styles.footer}>
         © 2026, Даниил Сопов
