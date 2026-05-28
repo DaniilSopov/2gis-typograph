@@ -94,9 +94,15 @@ export const rules = [
       let depth = 0;
       for (let i = 0; i < text.length; i++) {
         const ch = text[i];
-        if (ch === '"') {
+        if (ch === '”') {
           const prevCh = i > 0 ? text[i - 1] : null;
-          const prevIsWordEnd = prevCh !== null && /[\wа-яёА-ЯЁ\)\]»"']/.test(prevCh);
+          const nextCh = i < text.length - 1 ? text[i + 1] : null;
+          // Inch/foot mark: digit before and no word char after → keep as-is
+          if (/\d/.test(prevCh) && (nextCh === null || !/[\wа-яёА-ЯЁ”]/.test(nextCh))) {
+            result += ch;
+            continue;
+          }
+          const prevIsWordEnd = prevCh !== null && /[\wа-яёА-ЯЁ\)\]»”']/.test(prevCh);
           if (depth > 0 && prevIsWordEnd) {
             depth--;
             result += depth === 0 ? '»' : '”';
@@ -186,7 +192,7 @@ export const rules = [
             const n1   = digits.slice(4, 7);
             const n2   = digits.slice(7, 9);
             const n3   = digits.slice(9, 11);
-            result += '+7 (' + area + ') ' + n1 + '-' + n2 + '-' + n3;
+            result += '+7 (' + area + ') ' + n1 + '‑' + n2 + '‑' + n3;
             i = j;
             continue;
           }
@@ -210,17 +216,14 @@ export const rules = [
     {
     id: 'number-thousands',
     name: 'Разделитель тысяч',
-    description: 'Числа от 5 цифр → узкий неразрывный пробел (U+202F) как разделитель тысяч',
+    description: 'Числа от 5 цифр → неразрывный пробел (U+00A0) как разделитель тысяч',
     group: 'nbsp',
     apply(text) {
-      // Normalize already-separated numbers: "20 000" → "20000"
-      // Handles regular spaces (NNBSP would be already normalized to space by sanitize)
-      text = text.replace(/(?<![+\d])(\d{1,3})( \d{3})+(?!\d)/g, match =>
+      text = text.replace(/(?<![+\d№])(\d{1,3})( \d{3})+(?!\d)/g, match =>
         match.replace(/ /g, '')
       );
-      // Insert NNBSP every 3 digits from right for 5+ digit numbers
-      return text.replace(/(?<![+\d])\d{5,}(?!\d)/g, num =>
-        num.replace(/(\d)(?=(\d{3})+$)/g, `$1${NNBSP}`)
+      return text.replace(/(?<![+\d№])\d{5,}(?!\d)/g, num =>
+        num.replace(/(\d)(?=(\d{3})+$)/g, `$1${NBSP}`)
       );
     },
   },
@@ -264,9 +267,27 @@ export const rules = [
     group: 'nbsp',
     apply(text) {
       return text.replace(
-        /(?<![а-яёА-ЯЁa-zA-Z\d\/\-\.])([а-яёa-zА-ЯЁA-Z]{1,2}|[а-яёa-zА-ЯЁA-Z]{1,2}[.,;:!?]|[.,;:!?][а-яёa-zА-ЯЁA-Z]{1,2}) (?=\S)/g,
+        /(?<![а-яёА-ЯЁa-zA-Z\d\/\-\.\xA0])([а-яёa-zА-ЯЁA-Z]{1,2}|[а-яёa-zА-ЯЁA-Z]{1,2}[.,;:!?]|[.,;:!?][а-яёa-zА-ЯЁA-Z]{1,2}) (?=\S)/g,
         (match, token) => `${token}${NBSP}`
       );
+    },
+  },
+  {
+    id: 'nbsp-numero',
+    name: 'NBSP после №',
+    description: 'После знака № ставится неразрывный пробел (обычный заменяется, отсутствующий добавляется)',
+    group: 'nbsp',
+    apply(text) {
+      return text.replace(/№ ?(?=\S)/g, `№${NBSP}`)
+    },
+  },
+  {
+    id: 'nbsp-abbr',
+    name: 'NBSP после аббревиатур',
+    description: 'Сокращения 3+ букв с точкой перед числом (корп., стр., пер. и др.) → NBSP',
+    group: 'nbsp',
+    apply(text) {
+      return text.replace(/([а-яёА-ЯЁ]{3,})\. (?=\d)/g, `$1.${NBSP}`)
     },
   },
   {
@@ -316,9 +337,11 @@ function sanitize(text) {
     .replace(/[ \t]{2,}/g, ' ')
     // Remove spaces at the start/end of each line
     .replace(/^[ \t]+|[ \t]+$/gm, '')
+    // Normalize smart/curly double quotes → straight double quote
+    .replace(/[“”„‟]/g, '"')
 }
 
-const URL_RE = /https?:\/\/\S+/gi;
+const URL_RE = /https?:\/\/\S+|(?<![а-яёА-ЯЁa-zA-Z\d])[\w-]+(?:\.[\w-]+)+\/\S*/gi;
 // \x02 / \x03 are control chars that never appear in normal text
 const phFor  = i => `\x02URL${i}\x03`;
 const PH_RE  = /\x02URL(\d+)\x03/g;
