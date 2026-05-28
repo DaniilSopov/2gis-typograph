@@ -126,6 +126,9 @@ const SpellEditor = forwardRef(function SpellEditor(
   const handleScroll = useCallback((e) => {
     scrollbarHandle(e)
     onScroll?.(e)
+    const el = e.currentTarget
+    const maxScroll = el.scrollHeight - el.clientHeight
+    el.style.caretColor = (el.scrollTop < 0 || el.scrollTop > maxScroll) ? 'transparent' : ''
   }, [scrollbarHandle, onScroll])
 
   return (
