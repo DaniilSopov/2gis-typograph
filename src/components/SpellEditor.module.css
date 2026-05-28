@@ -2,26 +2,13 @@
   position: relative;
   background: var(--color-surface);
   border-radius: var(--radius);
-  min-height: 400px;
-  max-height: 400px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: none;
-  box-shadow: inset 0 0 0 2px rgba(27, 161, 54, 0);
-  transition: box-shadow 0.3s ease;
-}
-
-.wrap::-webkit-scrollbar {
-  display: none;
-}
-
-.wrapEmpty {
-  box-shadow: inset 0 0 0 2px rgba(27, 161, 54, 0.5);
 }
 
 .editor {
   min-height: 400px;
+  max-height: 400px;
   width: 100%;
+  height: 400px;
   font-family: var(--font);
   font-size: 16px;
   font-weight: 400;
@@ -30,15 +17,28 @@
   padding: 13px 40px 16px 16px;
   caret-color: #1BA136;
   user-select: text;
+  overscroll-behavior: contain;
   border: none;
   border-radius: var(--radius);
   background: var(--color-surface);
   color: var(--color-text);
   outline: none;
   box-sizing: border-box;
+  overflow-y: auto;
   white-space: pre-wrap;
   overflow-wrap: break-word;
   cursor: text;
+  scrollbar-width: none;
+  box-shadow: inset 0 0 0 2px rgba(27, 161, 54, 0);
+  transition: box-shadow 0.3s ease;
+}
+
+.editor::-webkit-scrollbar {
+  display: none;
+}
+
+.editorEmpty {
+  box-shadow: inset 0 0 0 2px rgba(27, 161, 54, 0.5);
 }
 
 .editor:empty::before {
@@ -73,22 +73,23 @@
 @media (min-width: 901px) {
   .wrap {
     flex: 1;
+    display: flex;
+    flex-direction: column;
     min-height: 0;
-    max-height: none;
   }
 
   .editor {
-    min-height: 100%;
+    flex: 1;
+    height: 100%;
+    min-height: 0;
+    max-height: none;
   }
 }
 
 @media (max-width: 900px) {
-  .wrap {
-    min-height: 280px;
-    max-height: 400px;
-  }
-
   .editor {
     min-height: 280px;
+    max-height: 400px;
+    height: 280px;
   }
 }

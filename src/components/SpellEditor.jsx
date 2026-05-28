@@ -60,10 +60,9 @@ const SpellEditor = forwardRef(function SpellEditor(
   ref
 ) {
   const elRef = useRef(null)
-  const wrapRef = useRef(null)
   useImperativeHandle(ref, () => elRef.current)
 
-  const { visible, thumbTop, thumbHeight, handleScroll: scrollbarHandle } = useCustomScrollbar(wrapRef)
+  const { visible, thumbTop, thumbHeight, handleScroll: scrollbarHandle } = useCustomScrollbar(elRef)
 
   const fromInput = useRef(false)
   const prevValue = useRef(value)
@@ -130,20 +129,17 @@ const SpellEditor = forwardRef(function SpellEditor(
   }, [scrollbarHandle, onScroll])
 
   return (
-    <div
-      ref={wrapRef}
-      className={`${styles.wrap}${isEmpty ? ` ${styles.wrapEmpty}` : ''}`}
-      onScroll={handleScroll}
-    >
+    <div className={styles.wrap}>
       <div
         ref={elRef}
         contentEditable
         suppressContentEditableWarning
-        className={styles.editor}
+        className={`${styles.editor}${isEmpty ? ` ${styles.editorEmpty}` : ''}`}
         data-placeholder={placeholder}
         onInput={handleInput}
         onKeyDown={handleKeyDown2}
         onPaste={handlePaste}
+        onScroll={handleScroll}
         onClick={onClick}
         role="textbox"
         aria-multiline="true"
