@@ -25,6 +25,12 @@ export const rules = [
         /(?<![:\d])(\d+(?:[.,]\d+)?)[ \t]*[-–—][ \t]*(\d+(?:[.,]\d+)?)(?=[^\d]|$)/g,
         `$1${NDASH}$2`
       );
+      // Abbreviated ranges: пн–пт, янв–мар, etc.
+      const ABBR = '(?:пн|вт|ср|чт|пт|сб|вс|янв|фев|мар|апр|май|июн|июл|авг|сен|окт|ноя|дек)';
+      text = text.replace(
+        new RegExp(`(?<![а-яёА-ЯЁ])(${ABBR})[ \\t]*[-–—][ \\t]*(${ABBR})(?![а-яёА-ЯЁ])`, 'gi'),
+        `$1${NDASH}$2`
+      );
       return text;
     },
   },
@@ -252,12 +258,21 @@ export const rules = [
     },
   },
   {
+    id: 'nbsp-caps-code',
+    name: 'NBSP в кодах типа RAL, RGB',
+    description: 'Аббревиатура из 2–6 заглавных латинских букв перед числом → NBSP (RAL 7021, RGB 255)',
+    group: 'nbsp',
+    apply(text) {
+      return text.replace(/([A-Z]{2,6}) (?=\d)/g, `$1${NBSP}`);
+    },
+  },
+  {
     id: 'nbsp-number-word',
     name: 'NBSP между числом и словом',
     description: 'Цифра + кириллическое слово → NBSP между ними',
     group: 'nbsp',
     apply(text) {
-      return text.replace(/(?<!\d{1,2}:\d)(\d) (?=[А-ЯЁа-яё]{3})/g, `$1${NBSP}`);
+      return text.replace(/(?<!\d{1,2}:\d)(\d) (?!(?:или|либо)(?![а-яёА-ЯЁ]))(?=[А-ЯЁа-яё]{3})/g, `$1${NBSP}`);
     },
   },
   {
