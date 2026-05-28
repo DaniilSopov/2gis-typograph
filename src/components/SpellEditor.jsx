@@ -123,6 +123,29 @@ const SpellEditor = forwardRef(function SpellEditor(
     document.execCommand('insertText', false, text) // eslint-disable-line no-restricted-globals
   }, [])
 
+  const updateCaret = useCallback(() => {
+    const el = elRef.current
+    if (!el) return
+    const sel = window.getSelection()
+    if (!sel?.rangeCount || !sel.isCollapsed || document.activeElement !== el) {
+      el.dataset.caret = '0'
+      return
+    }
+    const range = sel.getRangeAt(0)
+    const rect = range.getBoundingClientRect()
+    const er = el.getBoundingClientRect()
+    const hasRect = rect.height > 0
+    el.style.setProperty('--caret-top', (hasRect ? rect.top - er.top + el.scrollTop : 13) + 'px')
+    el.style.setProperty('--caret-left', (hasRect ? rect.left - er.left : 16) + 'px')
+    el.style.setProperty('--caret-h', (rect.height || 24) + 'px')
+    el.dataset.caret = '1'
+  }, [])
+
+  useEffect(() => {
+    document.addEventListener('selectionchange', updateCaret)
+    return () => document.removeEventListener('selectionchange', updateCaret)
+  }, [updateCaret])
+
   const handleScroll = useCallback((e) => {
     scrollbarHandle(e)
     onScroll?.(e)
