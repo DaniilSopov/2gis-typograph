@@ -29,10 +29,16 @@
   overflow-wrap: break-word;
   cursor: text;
   scrollbar-width: none;
+  box-shadow: inset 0 0 0 2px rgba(27, 161, 54, 0);
+  transition: box-shadow 0.3s ease;
 }
 
 .editor::-webkit-scrollbar {
   display: none;
+}
+
+.editorEmpty {
+  box-shadow: inset 0 0 0 2px rgba(27, 161, 54, 0.5);
 }
 
 .editor:empty::before {

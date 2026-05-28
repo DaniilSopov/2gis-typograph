@@ -48,9 +48,10 @@ export default function App() {
   }, [input])
 
   useEffect(() => {
+    if (!input.trim()) { handleProcess(); return }
     const timer = setTimeout(handleProcess, 300)
     return () => clearTimeout(timer)
-  }, [handleProcess])
+  }, [handleProcess, input])
 
   useEffect(() => {
     if (input && clearedText !== null) setClearedText(null)
@@ -120,6 +121,7 @@ export default function App() {
               onClick={handleEditorClick}
               onScroll={() => setPopup(null)}
               placeholder="Вставьте текст сюда..."
+              isEmpty={!input}
             />
             {input ? (
               <button

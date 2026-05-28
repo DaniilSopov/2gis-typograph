@@ -56,7 +56,7 @@ function renderContent(el, text, errors) {
 }
 
 const SpellEditor = forwardRef(function SpellEditor(
-  { value, onChange, errors = [], onKeyDown, onClick, onScroll, placeholder },
+  { value, onChange, errors = [], onKeyDown, onClick, onScroll, placeholder, isEmpty },
   ref
 ) {
   const elRef = useRef(null)
@@ -134,7 +134,7 @@ const SpellEditor = forwardRef(function SpellEditor(
         ref={elRef}
         contentEditable
         suppressContentEditableWarning
-        className={styles.editor}
+        className={`${styles.editor}${isEmpty ? ` ${styles.editorEmpty}` : ''}`}
         data-placeholder={placeholder}
         onInput={handleInput}
         onKeyDown={handleKeyDown2}
