@@ -100,30 +100,6 @@ function IconCheck() {
   )
 }
 
-function countChanges(segments) {
-  const counts = { nbsp: 0, dash: 0, quotes: 0, zero: 0, other: 0 }
-  for (const seg of segments) {
-    if (!seg.changed) continue
-    const len = seg.text.length
-    if (seg.group === 'nbsp') counts.nbsp += len
-    else if (seg.group === 'dash-em' || seg.group === 'dash-en') counts.dash += len
-    else if (seg.group === 'quotes') counts.quotes += len
-    else if (seg.group === 'zero-width') counts.zero += len
-    else counts.other += len
-  }
-  return counts
-}
-
-function CountChip({ label, count, color }) {
-  if (!count) return null
-  return (
-    <div className={styles.countChip} style={{ background: color }}>
-      <span className={styles.chipLabel}>{label}</span>
-      <span className={styles.chipCount}>{count}</span>
-    </div>
-  )
-}
-
 function IconInfo() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -184,8 +160,6 @@ export default function OutputPanel({ segments, processed, highlightEnabled, onT
 
   const hasResult = segments !== null
   const canCopy = !!processed
-  const counts = hasResult && segments.length > 0 ? countChanges(segments) : null
-  const hasStats = counts && (counts.nbsp + counts.dash + counts.quotes + counts.zero + counts.other) > 0
 
   return (
     <section className={styles.panel}>
@@ -246,15 +220,6 @@ export default function OutputPanel({ segments, processed, highlightEnabled, onT
         )}
       </div>
 
-      {hasStats && (
-        <div className={styles.statsRow}>
-          <CountChip label="Неразрывный пробел" count={counts.nbsp} color="var(--highlight-nbsp)" />
-          <CountChip label="Тире" count={counts.dash} color="var(--highlight-dash-em)" />
-          <CountChip label="Кавычки" count={counts.quotes} color="var(--highlight-quotes)" />
-          <CountChip label="Word Joiner" count={counts.zero} color="var(--highlight-zero)" />
-          <CountChip label="Другие символы" count={counts.other} color="var(--highlight-other)" />
-        </div>
-      )}
     </section>
   )
 }

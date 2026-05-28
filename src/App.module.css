@@ -126,6 +126,40 @@
 
 
 
+/* ── Stats chips ──────────────────────────────────────────────────────────────── */
+.statsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 0 0 calc(50% + 12px);
+  flex-shrink: 0;
+}
+
+.countChip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.chipLabel {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: -0.234px;
+  color: var(--color-text);
+}
+
+.chipCount {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: -0.234px;
+  color: var(--color-text);
+}
+
 /* ── Footer ─────────────────────────────────────────────────────────────────── */
 .footer {
   padding: 20px 0 16px;
@@ -167,6 +201,24 @@
 
 .suggestionItem:hover {
   background: rgba(0, 0, 0, 0.06);
+}
+
+@media (min-width: 901px) {
+  .layout {
+    height: 100vh;
+  }
+
+  .main {
+    align-items: stretch;
+    min-height: 0;
+  }
+
+  .textareaWrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
 }
 
 @media (max-width: 900px) {
