@@ -1,15 +1,16 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
+import { useCustomScrollbar } from '../hooks/useCustomScrollbar.js'
 import Legend from './Legend.jsx'
 import Toggle from './Toggle.jsx'
 import styles from './OutputPanel.module.css'
 
 const TYPO_CHAR_GROUP = {
-  ' ': 'nbsp',
-  ' ': 'nbsp',
-  '⁠': 'zero-width',
-  '​': 'zero-width',
+  ' ': 'nbsp',   // NBSP
+  ' ': 'nbsp',   // NNBSP
+  '⁠': 'zero-width', // Word Joiner
+  '​': 'zero-width', // ZWSP
   '«': 'quotes', '»': 'quotes',
-  '„': 'quotes', '"': 'quotes', '"': 'quotes',
+  '„': 'quotes', '“': 'quotes', '”': 'quotes',
   '—': 'dash-em', '–': 'dash-en',
 }
 
@@ -75,24 +76,23 @@ function Segment({ segment, highlight }) {
   return (
     <>
       {[...segment.text].map((char, i) => {
+        if (char === '\n') return <span key={i}>{char}</span>
         const group = TYPO_CHAR_GROUP[char] || segment.group
-        if (group === 'changed') return <span key={i}>{char}</span>
         return <CharMark key={i} char={char} group={group} />
       })}
     </>
   )
 }
 
-
 function IconCopy() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12.25 8C14.31 8 16 9.69 16 11.75V18.25C16 20.31 14.31 22 12.25 22H5.75C3.69 22 2 20.31 2 18.25V11.75C2 9.69 3.69 8 5.75 8H12.25ZM4.7002 9.7002C4.1502 9.7002 3.7002 10.1502 3.7002 10.7002V19.2998C3.7002 19.8498 4.1502 20.2998 4.7002 20.2998H13.2998C13.8498 20.2998 14.2998 19.8498 14.2998 19.2998V10.7002C14.2998 10.1502 13.8498 9.7002 13.2998 9.7002H4.7002ZM18.25 2C20.31 2 22 3.69 22 5.75V12.25C22 14.31 20.31 16 18.25 16H17.7002V14.2998H19.2998C19.8498 14.2998 20.2998 13.8498 20.2998 13.2998V4.7002C20.2998 4.1502 19.8498 3.7002 19.2998 3.7002H10.7002C10.1502 3.7002 9.7002 4.1502 9.7002 4.7002V6.2998H8V5.75C8 3.69 9.69 2 11.75 2H18.25Z" fill="currentColor" />
+      <path d="M12.25 8C14.31 8 16 9.69 16 11.75V18.25C16 20.31 14.31 22 12.25 22H5.75C3.69 22 2 20.31 2 18.25V11.75C2 9.69 3.69 8 5.75 8H12.25ZM18.25 2C20.3098 2.0001 21.9999 3.69017 22 5.75V12.25C21.9999 14.3098 20.3098 15.9999 18.25 16H17.7002V11.75C17.7001 8.75018 15.2498 6.29991 12.25 6.2998H8V5.75C8.00013 3.69017 9.69016 2.0001 11.75 2H18.25Z" fill="currentColor" />
     </svg>
   )
 }
 
-function IconCheckCircle() {
+function IconCheck() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92493 23 1 18.0751 1 12C1 5.92487 5.92493 1 12 1ZM15.9502 7L10.9697 15.5996L8.90039 12H6.94043L9.24023 16C10.0102 17.3299 11.9302 17.33 12.7002 16L17.8604 7H15.9502Z" fill="currentColor" />
@@ -100,20 +100,47 @@ function IconCheckCircle() {
   )
 }
 
+function countChanges(segments) {
+  const counts = { nbsp: 0, dash: 0, quotes: 0, zero: 0, other: 0 }
+  for (const seg of segments) {
+    if (!seg.changed) continue
+    const len = seg.text.length
+    if (seg.group === 'nbsp') counts.nbsp += len
+    else if (seg.group === 'dash-em' || seg.group === 'dash-en') counts.dash += len
+    else if (seg.group === 'quotes') counts.quotes += len
+    else if (seg.group === 'zero-width') counts.zero += len
+    else counts.other += len
+  }
+  return counts
+}
+
+function CountChip({ label, count, color }) {
+  if (!count) return null
+  return (
+    <div className={styles.countChip} style={{ background: color }}>
+      <span className={styles.chipLabel}>{label}</span>
+      <span className={styles.chipCount}>{count}</span>
+    </div>
+  )
+}
+
 function IconInfo() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path d="M8 0C12.418 0 16 3.581 16 8C16 12.418 12.418 16 8 16C3.582 16 0 12.418 0 8C0 3.582 3.582 0 8 0ZM6 6V7.40039H8.17383L6.93945 12H8.38672L9.49219 7.88965C9.7479 6.93778 9.02984 6 8.04297 6H6ZM10 3C9.447 3 9 3.448 9 4C9 4.552 9.447 5 10 5C10.553 5 11 4.552 11 4C11 3.448 10.553 3 10 3Z" fill="#b8b8b8" />
+      <path d="M8 0C12.418 0 16 3.581 16 8C16 12.418 12.418 16 8 16C3.582 16 0 12.418 0 8C0 3.582 3.582 0 8 0ZM6 6V7.40039H8.17383L6.93945 12H8.38672L9.49219 7.88965C9.7479 6.93778 9.02984 6 8.04297 6H6ZM10 3C9.447 3 9 3.448 9 4C9 4.552 9.447 5 10 5C10.553 5 11 4.552 11 4C11 3.448 10.553 3 10 3Z" fill="currentColor" />
     </svg>
   )
 }
 
-export default function OutputPanel({ segments, processed, highlightEnabled, onToggleHighlight }) {
+export default function OutputPanel({ segments, processed, highlightEnabled, onToggleHighlight, active }) {
   const [copied, setCopied] = useState(false)
   const [legendMounted, setLegendMounted] = useState(false)
   const [legendVisible, setLegendVisible] = useState(false)
   const infoWrapperRef = useRef(null)
   const legendTimerRef = useRef(null)
+  const outputRef = useRef(null)
+
+  const { visible, thumbTop, thumbHeight, handleScroll } = useCustomScrollbar(outputRef)
 
   const openLegend = useCallback(() => {
     if (legendTimerRef.current) clearTimeout(legendTimerRef.current)
@@ -152,11 +179,13 @@ export default function OutputPanel({ segments, processed, highlightEnabled, onT
       document.body.removeChild(ta)
     }
     setCopied(true)
-    setTimeout(() => setCopied(false), 1800)
+    setTimeout(() => setCopied(false), 2000)
   }, [processed])
 
   const hasResult = segments !== null
   const canCopy = !!processed
+  const counts = hasResult && segments.length > 0 ? countChanges(segments) : null
+  const hasStats = counts && (counts.nbsp + counts.dash + counts.quotes + counts.zero + counts.other) > 0
 
   return (
     <section className={styles.panel}>
@@ -182,30 +211,50 @@ export default function OutputPanel({ segments, processed, highlightEnabled, onT
         </div>
       </div>
 
-      <div className={styles.output}>
-        {!hasResult ? (
-          <span className={styles.placeholder}>Результат появится здесь</span>
-        ) : segments.length === 0 ? (
-          <span className={styles.placeholder}>—</span>
-        ) : (
-          segments.map((seg, i) => <Segment key={i} segment={seg} highlight={highlightEnabled} />)
+      <div className={styles.outputWrap}>
+        <div ref={outputRef} className={`${styles.output}${active ? ` ${styles.outputActive}` : ''}`} onScroll={handleScroll}>
+          {!hasResult || segments.length === 0 ? (
+            <span className={styles.placeholder}>Текст автоматически появится здесь</span>
+          ) : (
+            segments.map((seg, i) => <Segment key={i} segment={seg} highlight={highlightEnabled} />)
+          )}
+        </div>
+
+        {canCopy && (
+          <button
+            className={styles.copyIconBtn}
+            onClick={handleCopy}
+            aria-label="Копировать"
+            tabIndex={-1}
+          >
+            <span className={styles.iconLayer} style={{ opacity: copied ? 0 : 1 }}>
+              <IconCopy />
+            </span>
+            <span className={styles.iconLayer} style={{ opacity: copied ? 1 : 0, color: '#1BA136' }}>
+              <IconCheck />
+            </span>
+          </button>
+        )}
+
+        {thumbHeight > 0 && (
+          <div className={styles.scrollTrack} aria-hidden="true">
+            <div
+              className={styles.scrollThumb}
+              style={{ top: thumbTop, height: thumbHeight, opacity: visible ? 1 : 0 }}
+            />
+          </div>
         )}
       </div>
 
-      <div className={styles.outputFooter}>
-        <button
-          className={`${styles.copyBtn} ${!canCopy ? styles.copyDisabled : ''} ${copied ? styles.copied : ''}`}
-          onClick={handleCopy}
-          disabled={!canCopy}
-        >
-          <span key={String(copied)} className={styles.copyBtnContent}>
-            {copied
-              ? <><IconCheckCircle />Скопировано в буфер обмена</>
-              : <><IconCopy />Копировать</>
-            }
-          </span>
-        </button>
-      </div>
+      {hasStats && (
+        <div className={styles.statsRow}>
+          <CountChip label="Неразрывный пробел" count={counts.nbsp} color="var(--highlight-nbsp)" />
+          <CountChip label="Тире" count={counts.dash} color="var(--highlight-dash-em)" />
+          <CountChip label="Кавычки" count={counts.quotes} color="var(--highlight-quotes)" />
+          <CountChip label="Word Joiner" count={counts.zero} color="var(--highlight-zero)" />
+          <CountChip label="Другие символы" count={counts.other} color="var(--highlight-other)" />
+        </div>
+      )}
     </section>
   )
 }

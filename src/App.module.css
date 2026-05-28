@@ -104,8 +104,8 @@
 
 .clearBtn {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 12px;
+  right: 12px;
   width: 24px;
   height: 24px;
   border: none;
@@ -117,52 +117,14 @@
   justify-content: center;
   color: #b8b8b8;
   border-radius: 6px;
+  transition: color 0.15s;
+}
+
+.clearBtn:hover {
+  color: #898989;
 }
 
 
-.inputFooter {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding-top: 12px;
-  flex-shrink: 0;
-}
-
-.hint {
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 16px;
-  letter-spacing: -0.234px;
-  color: var(--color-text-secondary);
-}
-
-.processBtn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 13px 16px 15px;
-  background: var(--color-accent);
-  color: #fff;
-  font-family: var(--font);
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 20px;
-  letter-spacing: -0.24px;
-  border: none;
-  border-radius: var(--radius-btn);
-  cursor: pointer;
-  transition: background 0.15s, opacity 0.15s;
-  white-space: nowrap;
-}
-
-.processBtn:hover:not(:disabled) {
-  background: var(--color-accent-hover);
-}
-
-.processBtn:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
 
 /* ── Footer ─────────────────────────────────────────────────────────────────── */
 .footer {
@@ -224,21 +186,5 @@
 @media (max-width: 480px) {
   .layout {
     padding: 20px 16px 0;
-  }
-
-  .inputFooter {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .processBtn {
-    justify-content: center;
-    width: 100%;
-  }
-
-  .hint {
-    order: 1;
-    text-align: center;
-    width: 100%;
   }
 }

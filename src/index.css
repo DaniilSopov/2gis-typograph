@@ -26,6 +26,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 
 :root {
@@ -43,6 +44,7 @@
   --highlight-quotes: rgba(239, 167, 1, 0.30);
   --highlight-dash-em: rgba(0, 89, 214, 0.30);
   --highlight-dash-en: rgba(53, 136, 253, 0.30);
+  --highlight-other: rgba(137, 137, 137, 0.25);
 
   --radius: 12px;
   --radius-btn: 10px;
@@ -56,6 +58,7 @@ body {
   color: var(--color-text);
   min-height: 100vh;
   line-height: 1.5;
+  overscroll-behavior: none;
 }
 
 #root {

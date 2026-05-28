@@ -1,5 +1,11 @@
 import { useRef, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react'
+import { useCustomScrollbar } from '../hooks/useCustomScrollbar.js'
 import styles from './SpellEditor.module.css'
+
+function getEditorText(el) {
+  const text = el.innerText ?? ''
+  return text.endsWith('\n') ? text.slice(0, -1) : text
+}
 
 function caretOffset(root) {
   const sel = window.getSelection()
@@ -20,9 +26,8 @@ function moveCaretTo(root, offset) {
       const r = document.createRange()
       r.setStart(node, rem)
       r.collapse(true)
-      const sel = window.getSelection()
-      sel.removeAllRanges()
-      sel.addRange(r)
+      window.getSelection().removeAllRanges()
+      window.getSelection().addRange(r)
       return
     }
     rem -= len
@@ -57,6 +62,8 @@ const SpellEditor = forwardRef(function SpellEditor(
   const elRef = useRef(null)
   useImperativeHandle(ref, () => elRef.current)
 
+  const { visible, thumbTop, thumbHeight, handleScroll: scrollbarHandle } = useCustomScrollbar(elRef)
+
   const fromInput = useRef(false)
   const prevValue = useRef(value)
   const errorsRef = useRef(errors)
@@ -71,7 +78,7 @@ const SpellEditor = forwardRef(function SpellEditor(
   // Errors updated (debounced): rebuild preserving caret
   useEffect(() => {
     const el = elRef.current
-    if (!el || el.textContent !== value) return
+    if (!el || getEditorText(el) !== value) return
     const focused = document.activeElement === el
     const pos = focused ? caretOffset(el) : -1
     renderContent(el, value, errors)
@@ -94,9 +101,9 @@ const SpellEditor = forwardRef(function SpellEditor(
     const el = elRef.current
     if (!el) return
     fromInput.current = true
-    // Clean up stray <br> browsers insert when last char is deleted
+    // Clean up stray nodes when editor is visually empty
     if (!el.textContent && el.childNodes.length) el.innerHTML = ''
-    const text = el.textContent
+    const text = getEditorText(el)
     prevValue.current = text
     onChange(text)
   }, [onChange])
@@ -116,22 +123,37 @@ const SpellEditor = forwardRef(function SpellEditor(
     document.execCommand('insertText', false, text) // eslint-disable-line no-restricted-globals
   }, [])
 
+  const handleScroll = useCallback((e) => {
+    scrollbarHandle(e)
+    onScroll?.(e)
+  }, [scrollbarHandle, onScroll])
+
   return (
-    <div
-      ref={elRef}
-      contentEditable
-      suppressContentEditableWarning
-      className={styles.editor}
-      data-placeholder={placeholder}
-      onInput={handleInput}
-      onKeyDown={handleKeyDown2}
-      onPaste={handlePaste}
-      onScroll={onScroll}
-      onClick={onClick}
-      role="textbox"
-      aria-multiline="true"
-      spellCheck={false}
-    />
+    <div className={styles.wrap}>
+      <div
+        ref={elRef}
+        contentEditable
+        suppressContentEditableWarning
+        className={styles.editor}
+        data-placeholder={placeholder}
+        onInput={handleInput}
+        onKeyDown={handleKeyDown2}
+        onPaste={handlePaste}
+        onScroll={handleScroll}
+        onClick={onClick}
+        role="textbox"
+        aria-multiline="true"
+        spellCheck={false}
+      />
+      {thumbHeight > 0 && (
+        <div className={styles.scrollTrack} aria-hidden="true">
+          <div
+            className={styles.scrollThumb}
+            style={{ top: thumbTop, height: thumbHeight, opacity: visible ? 1 : 0 }}
+          />
+        </div>
+      )}
+    </div>
   )
 })
 

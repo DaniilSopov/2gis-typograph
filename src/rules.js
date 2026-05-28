@@ -121,6 +121,29 @@ export const rules = [
     },
   },
 
+  // ── spacing group ───────────────────────────────────────────────────────────
+  {
+    id: 'spacing-after-punct',
+    name: 'Пробел после знака препинания',
+    description: 'Точка перед заглавной кириллицей без пробела → пробел (конец предложения); запятая перед словом без пробела → пробел',
+    group: 'spacing',
+    apply(text) {
+      // Period before Cyrillic uppercase without space → sentence boundary
+      // Requires 2+ chars before period to exclude single-letter initials (А.Б.)
+      text = text.replace(
+        /([а-яёА-ЯЁa-zA-Z0-9]{2,})\.(?=[А-ЯЁ])/g,
+        '$1. '
+      );
+      // Comma before letter without space → add space
+      // Excludes digit,digit (decimal comma: 1,5) since second group requires letter
+      text = text.replace(
+        /([а-яёА-ЯЁa-zA-Z0-9]),([а-яёА-ЯЁa-zA-Z])/g,
+        '$1, $2'
+      );
+      return text;
+    },
+  },
+
   // ── nbsp group ──────────────────────────────────────────────────────────────
   {
     id: 'phone-numbers',
@@ -241,7 +264,7 @@ export const rules = [
     group: 'nbsp',
     apply(text) {
       return text.replace(
-        /(?<![а-яёА-ЯЁa-zA-Z\d\/\-])([а-яёa-zА-ЯЁA-Z]{1,2}|[а-яёa-zА-ЯЁA-Z]{1,2}[.,;:!?]|[.,;:!?][а-яёa-zА-ЯЁA-Z]{1,2}) (?=\S)/g,
+        /(?<![а-яёА-ЯЁa-zA-Z\d\/\-\.])([а-яёa-zА-ЯЁA-Z]{1,2}|[а-яёa-zА-ЯЁA-Z]{1,2}[.,;:!?]|[.,;:!?][а-яёa-zА-ЯЁA-Z]{1,2}) (?=\S)/g,
         (match, token) => `${token}${NBSP}`
       );
     },
@@ -275,8 +298,7 @@ export const rules = [
     description: 'После / (перед коротким сегментом ≤3 симв.) и после – в числовых диапазонах добавляется Word Joiner (U+2060)',
     group: 'zero-width',
     apply(text) {
-      // Only short segments after slash — units like м/с, км/ч; long segments (URLs) are skipped
-      text = text.replace(/\/(?=[\p{L}\d]{1,3}(?:[^\p{L}\d]|$))/gu, `/${WJ}`);
+      text = text.replace(/\/(?=[\p{L}\d])/gu, `/${WJ}`);
       // Numeric ranges: prevent line break after en-dash
       text = text.replace(/–(?=\d)/g, `–${WJ}`);
       return text;
@@ -296,7 +318,28 @@ function sanitize(text) {
     .replace(/^[ \t]+|[ \t]+$/gm, '')
 }
 
+const URL_RE = /https?:\/\/\S+/gi;
+// \x02 / \x03 are control chars that never appear in normal text
+const phFor  = i => `\x02URL${i}\x03`;
+const PH_RE  = /\x02URL(\d+)\x03/g;
+
 export function applyRules(text) {
   if (!text || !text.trim()) return text;
-  return rules.reduce((current, rule) => rule.apply(current), sanitize(text));
+
+  // Step 1 — pull out URLs so rules never touch them
+  const urls = [];
+  const masked = text.replace(URL_RE, match => {
+    // Keep trailing sentence punctuation outside the placeholder
+    const tail = match.match(/[.,;!?]+$/)?.[0] ?? '';
+    urls.push(tail ? match.slice(0, -tail.length) : match);
+    return phFor(urls.length - 1) + tail;
+  });
+
+  // Step 2 — sanitize + apply all typographic rules
+  const processed = rules.reduce((cur, rule) => rule.apply(cur), sanitize(masked));
+
+  // Step 3 — restore original URLs
+  return urls.length === 0
+    ? processed
+    : processed.replace(PH_RE, (_, i) => urls[+i]);
 }

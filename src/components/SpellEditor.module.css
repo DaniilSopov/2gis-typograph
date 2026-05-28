@@ -1,3 +1,9 @@
+.wrap {
+  position: relative;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+}
+
 .editor {
   min-height: 400px;
   max-height: 400px;
@@ -8,7 +14,10 @@
   font-weight: 400;
   line-height: 1.5;
   letter-spacing: -0.24px;
-  padding: 13px 24px 16px 16px;
+  padding: 13px 40px 16px 16px;
+  caret-color: #1BA136;
+  user-select: text;
+  overscroll-behavior: contain;
   border: none;
   border-radius: var(--radius);
   background: var(--color-surface);
@@ -19,6 +28,11 @@
   white-space: pre-wrap;
   overflow-wrap: break-word;
   cursor: text;
+  scrollbar-width: none;
+}
+
+.editor::-webkit-scrollbar {
+  display: none;
 }
 
 .editor:empty::before {
@@ -30,6 +44,24 @@
 .error {
   text-decoration: underline wavy red;
   text-decoration-skip-ink: none;
+}
+
+.scrollTrack {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 13px;
+  pointer-events: none;
+}
+
+.scrollThumb {
+  position: absolute;
+  right: 4px;
+  width: 5px;
+  border-radius: 100px;
+  background: rgba(20, 20, 20, 0.09);
+  transition: opacity 0.2s ease-in-out;
 }
 
 @media (max-width: 900px) {

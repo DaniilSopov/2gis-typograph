@@ -8,14 +8,6 @@ import OutputPanel from './components/OutputPanel.jsx'
 import Toggle from './components/Toggle.jsx'
 import styles from './App.module.css'
 
-function IconTextFormat() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M8.53815 5L13.6358 19H11.8253L10.6241 15.7012H4.0108L2.80963 19H1.00006L6.09772 5H8.53815ZM19.2481 8C21.3099 8 23.0001 9.689 23.0001 11.75V19H21.2989V17.9043C20.7477 18.5671 19.9273 18.999 18.9981 18.999H17.7208C16.0622 18.9989 14.7198 17.656 14.7198 15.999V15.2979C14.7199 13.642 16.0622 12.2979 17.7208 12.2979H21.2989V10.7002C21.2989 10.1502 20.8491 9.7002 20.2989 9.7002H15.6964V8H19.2481ZM16.3194 13.998V17.2988H21.3008V13.998H16.3194ZM4.63092 14.001H10.0079L7.31842 6.61914L4.63092 14.001Z" fill="currentColor" />
-    </svg>
-  )
-}
-
 
 function IconXmark() {
   return (
@@ -25,8 +17,17 @@ function IconXmark() {
   )
 }
 
+function IconUndo() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M2 8.65471L7.65495 14.3097L8.84951 13.1151L6.2553 10.5209C5.88066 10.1462 6.14217 9.50303 6.67938 9.50304L16.5249 9.50309C18.2867 9.50309 19.7153 10.9917 19.7153 13.7854C19.7153 16.579 18.2867 18.0335 16.5249 18.0335H10.4623V19.7854L16.5249 19.7854C19.2375 19.7854 21.4361 17.547 21.4361 13.7854C21.4361 10.0237 19.2375 7.78539 16.5249 7.78539L6.72883 7.78538C6.19162 7.78537 5.91594 7.14212 6.29763 6.76043L8.85639 4.20168L7.65471 3L2 8.65471Z" fill="currentColor"/>
+    </svg>
+  )
+}
+
 export default function App() {
   const [input, setInput] = useState('')
+  const [clearedText, setClearedText] = useState(null)
   const [result, setResult] = useState(null)
   const [highlightEnabled, setHighlightEnabled] = useState(true)
   const [spellEnabled, setSpellEnabled] = useState(true)
@@ -37,22 +38,23 @@ export default function App() {
   const spellErrors = useSpellcheck(input, spellEnabled)
 
   const handleProcess = useCallback(() => {
-    const raw = input
-    if (!raw.trim()) {
-      setResult({ processed: raw, segments: [] })
+    if (!input.trim()) {
+      setResult({ processed: input, segments: [] })
       return
     }
-    const processed = formatOutput(applyRules(raw), 'unicode')
-    const segments = computeDiff(raw, processed)
+    const processed = formatOutput(applyRules(input), 'unicode')
+    const segments = computeDiff(input, processed)
     setResult({ processed, segments })
   }, [input])
 
-  const handleKeyDown = useCallback((e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-      e.preventDefault()
-      handleProcess()
-    }
+  useEffect(() => {
+    const timer = setTimeout(handleProcess, 300)
+    return () => clearTimeout(timer)
   }, [handleProcess])
+
+  useEffect(() => {
+    if (input && clearedText !== null) setClearedText(null)
+  }, [input, clearedText])
 
   const handleEditorClick = useCallback((e) => {
     if (!spellErrors.length) return
@@ -115,32 +117,29 @@ export default function App() {
               value={input}
               onChange={setInput}
               errors={spellEnabled ? spellErrors : []}
-              onKeyDown={handleKeyDown}
               onClick={handleEditorClick}
               onScroll={() => setPopup(null)}
               placeholder="Вставьте текст сюда..."
             />
-            {input && (
+            {input ? (
               <button
                 className={styles.clearBtn}
-                onClick={() => setInput('')}
+                onClick={() => { setClearedText(input); setInput('') }}
                 aria-label="Очистить"
                 tabIndex={-1}
               >
                 <IconXmark />
               </button>
-            )}
-          </div>
-          <div className={styles.inputFooter}>
-            <span className={styles.hint}>Ctrl + Enter — типографировать</span>
-            <button
-              className={styles.processBtn}
-              onClick={handleProcess}
-              disabled={!input}
-            >
-              <IconTextFormat />
-              Типографировать
-            </button>
+            ) : clearedText !== null ? (
+              <button
+                className={styles.clearBtn}
+                onClick={() => { setInput(clearedText); setClearedText(null) }}
+                aria-label="Вернуть"
+                tabIndex={-1}
+              >
+                <IconUndo />
+              </button>
+            ) : null}
           </div>
         </section>
 
@@ -149,6 +148,7 @@ export default function App() {
           processed={result?.processed ?? null}
           highlightEnabled={highlightEnabled}
           onToggleHighlight={() => setHighlightEnabled(v => !v)}
+          active={!!input}
         />
       </main>
 
