@@ -17,7 +17,7 @@
   padding: 13px 40px 16px 16px;
   caret-color: #1BA136;
   user-select: text;
-  overscroll-behavior: none;
+  overscroll-behavior: contain;
   border: none;
   border-radius: var(--radius);
   background: var(--color-surface);
