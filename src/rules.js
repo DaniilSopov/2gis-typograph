@@ -82,6 +82,12 @@ export const rules = [
             }
           }
 
+          // ④ Code/reference: letter-hyphen-digit, no spaces (ТЗ-2847, AB-123)
+          if (dashOnly === '-' && !hasSpace &&
+              /[а-яёА-ЯЁa-zA-Z]$/.test(before) && /^\d/.test(afterChar)) {
+            return match;
+          }
+
           // All other cases → em-dash with NBSP on the left
           return `${before}${NBSP}${MDASH} `;
         }
@@ -272,7 +278,7 @@ export const rules = [
     description: 'Цифра + кириллическое слово → NBSP между ними',
     group: 'nbsp',
     apply(text) {
-      return text.replace(/(?<!\d{1,2}:\d)(\d) (?!(?:или|либо)(?![а-яёА-ЯЁ]))(?=[А-ЯЁа-яё]{3})/g, `$1${NBSP}`);
+      return text.replace(/(?<!\d{1,2}:\d)(?<!‑\d)(\d) (?!(?:или|либо)(?![а-яёА-ЯЁ]))(?=[А-ЯЁа-яё]{3})/g, `$1${NBSP}`);
     },
   },
   {
