@@ -60,7 +60,6 @@ const SpellEditor = forwardRef(function SpellEditor(
   ref
 ) {
   const elRef = useRef(null)
-  const caretTimerRef = useRef(null)
   useImperativeHandle(ref, () => elRef.current)
 
   const { visible, thumbTop, thumbHeight, handleScroll: scrollbarHandle } = useCustomScrollbar(elRef)
@@ -129,22 +128,6 @@ const SpellEditor = forwardRef(function SpellEditor(
     onScroll?.(e)
   }, [scrollbarHandle, onScroll])
 
-  const handleWheel = useCallback((e) => {
-    const el = elRef.current
-    if (!el) return
-    const maxScroll = el.scrollHeight - el.clientHeight
-    if (maxScroll <= 0) return
-    const atTop = el.scrollTop <= 0
-    const atBottom = el.scrollTop >= maxScroll - 1
-    if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
-      el.style.caretColor = 'transparent'
-      clearTimeout(caretTimerRef.current)
-      caretTimerRef.current = setTimeout(() => {
-        if (elRef.current) elRef.current.style.caretColor = ''
-      }, 600)
-    }
-  }, [])
-
   return (
     <div className={styles.wrap}>
       <div
@@ -157,7 +140,6 @@ const SpellEditor = forwardRef(function SpellEditor(
         onKeyDown={handleKeyDown2}
         onPaste={handlePaste}
         onScroll={handleScroll}
-        onWheel={handleWheel}
         onClick={onClick}
         role="textbox"
         aria-multiline="true"
