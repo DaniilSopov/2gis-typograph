@@ -44,7 +44,7 @@
   position: absolute;
   top: var(--caret-top, 0px);
   left: var(--caret-left, 0px);
-  width: 2px;
+  width: 1.5px;
   height: var(--caret-h, 24px);
   background: #1BA136;
   border-radius: 1px;
